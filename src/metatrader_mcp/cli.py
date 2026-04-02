@@ -1,8 +1,12 @@
 import click
 import os
 from dotenv import load_dotenv
+from importlib import metadata
 from metatrader_mcp.server import mcp
+from metatrader_mcp.startup import echo_startup_banner
 from metatrader_mcp.utils import resolve_transport_config, run_mcp
+
+PACKAGE_VERSION = metadata.version("metatrader-mcp-server")
 
 @click.command()
 @click.option("--login", required=True, type=int, help="MT5 login ID")
@@ -15,6 +19,7 @@ from metatrader_mcp.utils import resolve_transport_config, run_mcp
 def main(login, password, server, path, transport, host, port):
     """Launch the MetaTrader MCP server."""
     load_dotenv()
+    echo_startup_banner("MetaTrader MCP Server", PACKAGE_VERSION, "metatrader-mcp-server")
     # override env vars if provided via CLI
     os.environ["login"] = str(login)
     os.environ["password"] = password

@@ -2,6 +2,7 @@
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
 from fastapi.middleware.cors import CORSMiddleware
+from importlib import metadata
 from .config import Settings
 from .routers import router as api_router
 import os
@@ -9,7 +10,10 @@ import argparse
 import uvicorn
 from dotenv import load_dotenv
 from metatrader_mcp.utils import init
+from metatrader_mcp.startup import echo_startup_banner
 from contextlib import asynccontextmanager
+
+PACKAGE_VERSION = metadata.version("metatrader-mcp-server")
 
 # Instantiate settings
 settings = Settings()
@@ -67,6 +71,7 @@ def main():
     parser.add_argument("--host", default="127.0.0.1", help="Bind host")
     parser.add_argument("--port", type=int, default=8000, help="Bind port")
     args = parser.parse_args()
+    echo_startup_banner("MetaTrader HTTP Server", PACKAGE_VERSION, "metatrader-http-server")
 
     # set both uppercase and lowercase env vars for CLI
     os.environ["LOGIN"] = args.login
@@ -82,7 +87,7 @@ def main():
         "metatrader_openapi.main:app",
         host=args.host,
         port=args.port,
-        reload=True,
+        reload=False,
     )
 
 if __name__ == "__main__":

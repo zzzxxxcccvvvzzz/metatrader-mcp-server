@@ -1,14 +1,17 @@
 import asyncio
 import logging
+from importlib import metadata
 
 import click
 from dotenv import load_dotenv
 
+from metatrader_mcp.startup import echo_startup_banner
 from metatrader_mcp.utils import init
 from metatrader_quote.config import Settings
 from metatrader_quote.server import QuoteServer
 
 logger = logging.getLogger(__name__)
+PACKAGE_VERSION = metadata.version("metatrader-mcp-server")
 
 
 @click.command()
@@ -23,6 +26,7 @@ logger = logging.getLogger(__name__)
 def main(login, password, server, path, host, port, symbols, poll_interval):
     """Launch the MetaTrader WebSocket Quote Server."""
     load_dotenv()
+    echo_startup_banner("MetaTrader Quote Server", PACKAGE_VERSION, "metatrader-quote-server")
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
